@@ -1,53 +1,62 @@
 <template>
-  <div>
-    <nuxt/>
-  </div>
+  <el-container>
+    <el-header>
+      <div class="header">
+        <el-dropdown v-if="username" @command="handleCommand" :show-timeout="0">
+          <el-button @click="handleClickProfile">
+            User: {{ username }}<i class="el-icon-arrow-down el-icon--right"></i>
+          </el-button>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item command="handleLogout">Logout</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+        <el-button v-else @click="handleLogin">Login</el-button>
+      </div>
+    </el-header>
+    <el-main><nuxt/></el-main>
+  </el-container>
 </template>
 
+<script>
+import { mapState, mapActions } from 'vuex'
+
+export default {
+  computed: mapState({
+    username: state => state.auth.username
+  }),
+  methods: {
+    ...mapActions({
+      logout: 'auth/logout'
+    }),
+    async handleLogout () {
+      await this.logout()
+
+      this.$cookies.remove('username')
+      this.$router.push('/')
+    },
+    handleCommand (command) {
+      this[command]()
+    },
+    handleLogin () {
+      this.$router.push('/login')
+    },
+    handleClickProfile () {
+      this.$router.push('/profile')
+    }
+  }
+}
+</script>
+
 <style>
-html {
-  font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  font-size: 16px;
-  word-spacing: 1px;
-  -ms-text-size-adjust: 100%;
-  -webkit-text-size-adjust: 100%;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
-  box-sizing: border-box;
+body {
+  padding-top: 1em;
 }
+</style>
 
-*, *:before, *:after {
-  box-sizing: border-box;
-  margin: 0;
-}
-
-.button--green {
-  display: inline-block;
-  border-radius: 4px;
-  border: 1px solid #3b8070;
-  color: #3b8070;
-  text-decoration: none;
-  padding: 10px 30px;
-}
-
-.button--green:hover {
-  color: #fff;
-  background-color: #3b8070;
-}
-
-.button--grey {
-  display: inline-block;
-  border-radius: 4px;
-  border: 1px solid #35495e;
-  color: #35495e;
-  text-decoration: none;
-  padding: 10px 30px;
-  margin-left: 15px;
-}
-
-.button--grey:hover {
-  color: #fff;
-  background-color: #35495e;
+<style scoped>
+.header {
+  display: flex;
+  justify-content: flex-end;
 }
 </style>
 
