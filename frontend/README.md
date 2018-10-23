@@ -1,4 +1,6 @@
-# nuxt-api-example
+NOTICE: This project was built by `vue init nuxt-community/starter-template .`
+
+# SPA (Nuxt) x API example
 
 > Nuxt.js project
 
